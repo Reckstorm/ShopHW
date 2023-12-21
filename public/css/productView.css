@@ -1,0 +1,14 @@
+.grid-parent-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.grid-data-container {
+    display: grid;
+    grid-auto-rows: minmax(50px, auto);
+}
+
+.a-card {
+    color: black;
+    text-decoration: none;
+}
