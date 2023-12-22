@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('layouts.app')
 
 @section('content')
     <div class="d-flex justify-content-center">
@@ -23,18 +23,20 @@
                 <div>
                     <h3 class="card-title">{{ $product->title ?? 'No title provided' }}</h3>
                 </div>
-                <div>
-                    <form action="{{route('products.destroy', ['id' => $product->id])}}" method="post" style="display: inline-block">
-                        @csrf
-                        @method('delete')
-                        <input type="submit" value="Remove" class="btn btn-danger btn-lg">
-                    </form>
-                    <form action="{{route('products.edit', ['id' => $product->id])}}" method="get" style="display: inline-block">
-                        @csrf
-                        @method('get')
-                        <input type="submit" value="Edit" class="btn btn-warning btn-lg">
-                    </form>
-                </div>
+                @if(isset(Auth::user()->is_admin) && Auth::user()->is_admin == 1)
+                    <div>
+                        <form action="{{route('products.destroy', ['id' => $product->id])}}" method="post" style="display: inline-block">
+                            @csrf
+                            @method('delete')
+                            <input type="submit" value="Remove" class="btn btn-danger btn-lg">
+                        </form>
+                        <form action="{{route('products.edit', ['id' => $product->id])}}" method="get" style="display: inline-block">
+                            @csrf
+                            @method('get')
+                            <input type="submit" value="Edit" class="btn btn-warning btn-lg">
+                        </form>
+                    </div>
+                @endif
             </div>
 
             <p class="card-text">Quantity: {{ $product->qty ?? 'No qty provided' }}</p>

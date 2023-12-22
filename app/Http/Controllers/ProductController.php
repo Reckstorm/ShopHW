@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -16,13 +17,21 @@ class ProductController extends Controller
         return view('Products.products', ['products' => $products]);
     }
 
-    public function create() : View
+    public function create()
     {
+        if (!Gate::allows('access-admin'))
+        {
+            return redirect(route('products.index'));
+        }
         return view('Products.create');
     }
 
     public function store(Request $request)
     {
+        if (!Gate::allows('access-admin'))
+        {
+            return redirect(route('products.index'));
+        }
         $data = $request->validate([
            'img' => 'required|url:http,https',
            'title' => 'required',
@@ -42,12 +51,20 @@ class ProductController extends Controller
 
     public function edit(string $id)
     {
+        if (!Gate::allows('access-admin'))
+        {
+            return redirect(route('products.index'));
+        }
         $product = Product::find($id);
         return view('Products.edit', ['product' => $product]);
     }
 
     public function update(string $id, Request $request)
     {
+        if (!Gate::allows('access-admin'))
+        {
+            return redirect(route('products.index'));
+        }
         $data = $request->validate([
             'img' => 'required|url:http,https',
             'title' => 'required',
@@ -67,6 +84,10 @@ class ProductController extends Controller
 
     public function destroy(string $id)
     {
+        if (!Gate::allows('access-admin'))
+        {
+            return redirect(route('products.index'));
+        }
         $product = Product::find($id);
         if($product->delete())
         {
@@ -87,11 +108,11 @@ class ProductController extends Controller
         {
             $product->qty -= $qty;
             $product->save();
-            return redirect(route('products.show', ['id' => $product->id]))->with('success', "$qty products bought successfully");
+            return redirect(route('products.show', ['id' => $product->id]))->with('success', "Bought successfully");
         }
         else
         {
-            return redirect(route('products.show', ['id' => $product->id]))->with('failure', "$qty not enough products");
+            return redirect(route('products.show', ['id' => $product->id]))->with('failure', "Not enough products");
         }
     }
 }
